@@ -20,16 +20,11 @@ jobs:
         distribution: 'temurin'
         java-version: '21.0.7'
 
-    - name: Set up JavaFX 21
-      uses: sormuras/setup-javafx@v2
-      with:
-        version: '21'
-
-    - name: List extracted JavaFX SDK folder
-      run: ls -l
-
-    - name: List JavaFX lib folder contents
-      run: ls -l javafx-sdk-21.0.7/lib
+    - name: Download and unzip JavaFX 21.0.7 SDK manually
+      run: |
+        wget https://download2.gluonhq.com/javafx/21.0.7/javafx-sdk-21.0.7_linux-x64_bin-sdk.zip -O javafx-sdk.zip
+        unzip javafx-sdk.zip
+        ls -l javafx-sdk-21.0.7/lib
 
     - name: Compile Java files with JavaFX
       run: |
