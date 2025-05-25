@@ -10,7 +10,15 @@
         "c:\\java\\javafx-sdk-21.0.6\\lib\\javafx.media.jar",
         "c:\\java\\javafx-sdk-21.0.6\\lib\\javafx.swing.jar",
         "c:\\java\\javafx-sdk-21.0.6\\lib\\javafx.web.jar",
-        "c:\\java\\javafx-sdk-21.0.6\\lib\\javafx-swt.jar"
+        "c:\\java\\javafx-sdk-21.0.6\\lib\\javafx-swt.jar",
+        "src/javafx/javafx-swt.jar",
+        "src/javafx/javafx.base.jar",
+        "src/javafx/javafx.controls.jar",
+        "src/javafx/javafx.fxml.jar",
+        "src/javafx/javafx.graphics.jar",
+        "src/javafx/javafx.media.jar",
+        "src/javafx/javafx.swing.jar",
+        "src/javafx/javafx.web.jar"
     ],
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
     "zencoder.enableRepoIndexing": true

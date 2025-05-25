@@ -9,8 +9,15 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "flappybird.Main",
+            "projectName": "FlappyBirdGame_91be892b"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "flappybird.Main",
             "projectName": "FlappyBird_3cb9f840",
-            "vmArgs": "--module-path \"C:/java/javafx-sdk-21.0.6/lib\" --add-modules javafx.controls,javafx.graphics,javafx.media --add-exports=javafx.base/com.sun.javafx=ALL-UNNAMED"
+            "vmArgs": "--module-path \"/workspaces/FlappyBirdGame/src/javafx/\" --add-modules javafx.controls,javafx.graphics,javafx.media --add-exports=javafx.base/com.sun.javafx=ALL-UNNAMED"
         },
         {
             "type": "java",
