@@ -20,17 +20,18 @@ jobs:
         distribution: 'temurin'
         java-version: '21.0.7'
 
-    - name: Download and unzip JavaFX 21.0.7 SDK manually
+    - name: Unzip JavaFX SDK from local repo file
       run: |
-        wget https://download2.gluonhq.com/javafx/21.0.7/javafx-sdk-21.0.7_linux-x64_bin-sdk.zip -O javafx-sdk.zip
-        unzip javafx-sdk.zip
-        ls -l javafx-sdk-21.0.7/lib
+        unzip libs/javafx-sdk-21.0.7-linux-x64.zip -d javafx-sdk
+
+    - name: List JavaFX lib folder contents
+      run: ls -l javafx-sdk/javafx-sdk-21.0.7/lib
 
     - name: Compile Java files with JavaFX
       run: |
         mkdir -p out
-        javac --module-path javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -d out $(find src -name "*.java")
+        javac --module-path javafx-sdk/javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -d out $(find src -name "*.java")
 
     - name: Run Java program with JavaFX
       run: |
-        java --module-path javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -cp out flappybird.Main
+        java --module-path javafx-sdk/javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -cp out flappybird.Main
