@@ -1,4 +1,4 @@
-name: Java CI - Manual compile & run
+name: Java CI - Compile & Run with JavaFX 21.0.7
 
 on:
   push:
@@ -11,17 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-    - name: Set up JDK 21
+    - name: Set up JDK 21.0.7
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
+        java-version: '21.0.7'
 
-    - name: Compile Java files
+    - name: Download JavaFX SDK 21.0.7
+      run: |
+        wget https://gluonhq.com/download/javafx-21.0.7_linux-x64_bin-sdk.zip -O javafx-sdk.zip
+        unzip javafx-sdk.zip
+
+    - name: List extracted JavaFX SDK folder
+      run: ls -l
+
+    - name: List JavaFX lib folder contents
+      run: ls -l javafx-sdk-21.0.7/lib
+
+    - name: Compile Java files with JavaFX
       run: |
         mkdir -p out
-        javac -d out $(find src -name "*.java")
+        javac --module-path javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -d out $(find src -name "*.java")
 
-    - name: Run Java program
-      run: java -cp out flappybird.Main
+    - name: Run Java program with JavaFX
+      run: |
+        java --module-path javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml -cp out flappybird.Main
