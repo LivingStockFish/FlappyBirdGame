@@ -22,7 +22,7 @@ jobs:
 
     - name: Download JavaFX SDK 21.0.7
       run: |
-        wget https://download2.gluonhq.com/javafx/21.0.7/javafx-sdk-21.0.7-linux-x64.zip -O javafx-sdk.zip
+        wget https://download2.gluonhq.com/javafx/21.0.6/javafx-sdk-21.0.6-linux-x64.zip -O javafx-sdk.zip
         unzip javafx-sdk.zip
 
     - name: List extracted JavaFX SDK folder
