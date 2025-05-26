@@ -20,10 +20,9 @@ jobs:
         distribution: 'temurin'
         java-version: '21.0.7'
 
-    - name: Download JavaFX SDK (Windows)
+    - name: Unzip JavaFX SDK
       run: |
-        Invoke-WebRequest -Uri https://gluonhq.com/download/javafx-21/windows/javafx-sdk-21.0.7.zip -OutFile javafx-sdk.zip
-        Expand-Archive javafx-sdk.zip -DestinationPath libs
+        Expand-Archive libs/javafx-sdk-21.0.7.zip -DestinationPath libs
 
     - name: Compile Java code
       shell: powershell
