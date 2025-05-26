@@ -22,7 +22,7 @@ jobs:
 
     - name: Unzip JavaFX SDK
       run: |
-        Expand-Archive libs/javafx-sdk-21.0.7.zip -DestinationPath libs
+        Expand-Archive libs/javafx-sdk.zip -DestinationPath libs
 
     - name: Compile Java code
       shell: powershell
