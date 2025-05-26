@@ -1,4 +1,4 @@
-name: Java CI - Compile & Run with JavaFX 21.0.7
+name: Java CI - Compile & Run with JavaFX 21.0.7 on Windows
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repo
@@ -20,12 +20,19 @@ jobs:
         distribution: 'temurin'
         java-version: '21.0.7'
 
-    - name: Install Xvfb
-      run: sudo apt-get update && sudo apt-get install -y xvfb
-
-    - name: Start Xvfb and Run JavaFX Program
+    - name: Download JavaFX SDK (Windows)
       run: |
-        unzip libs/javafx-sdk.zip -d libs
-        mkdir -p out
-        javac --module-path libs/javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml,javafx.media -d out $(find src -name "*.java")
-        xvfb-run java --module-path libs/javafx-sdk-21.0.7/lib --add-modules javafx.controls,javafx.fxml,javafx.media -cp out flappybird.Main
+        Invoke-WebRequest -Uri https://gluonhq.com/download/javafx-21/windows/javafx-sdk-21.0.7.zip -OutFile javafx-sdk.zip
+        Expand-Archive javafx-sdk.zip -DestinationPath libs
+
+    - name: Compile Java code
+      shell: powershell
+      run: |
+        mkdir out
+        $files = Get-ChildItem -Path src -Filter *.java -Recurse | ForEach-Object { $_.FullName }
+        javac --module-path libs\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml,javafx.media -d out $files
+
+    - name: Run JavaFX application
+      shell: powershell
+      run: |
+        java --module-path libs\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml,javafx.media -cp out flappybird.Main
