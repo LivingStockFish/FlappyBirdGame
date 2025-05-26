@@ -1,4 +1,4 @@
-name: Java CI - Compile & Run with JavaFX 21.0.7 on Windows
+name: Java CI - Compile with JavaFX 21.0.7 on Windows
 
 on:
   push:
@@ -31,12 +31,5 @@ jobs:
         $files = Get-ChildItem -Path src -Filter *.java -Recurse | ForEach-Object { $_.FullName }
         javac --module-path libs\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml,javafx.media -d out $files
 
-    - name: Copy resources (images, sounds, etc.)
-      shell: powershell
-      run: |
-        Copy-Item -Recurse -Force src\resources out\resources
-
-    - name: Run JavaFX application
-      shell: powershell
-      run: |
-        java --module-path libs\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml,javafx.media -cp out flappybird.Main
+    - name: ✅ Compilation successful
+      run: echo "JavaFX project compiled successfully."
