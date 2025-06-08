@@ -1,13 +1,10 @@
 package flappybird;
-
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 public class Main extends Application {
-
     @Override
     public void start(Stage primaryStage) {
         Settings settings = Settings.getInstance();
@@ -35,8 +32,8 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.sizeToScene();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
 }
+

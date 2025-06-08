@@ -1,5 +1,4 @@
 package flappybird;
-
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,37 +10,30 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 public class BirdSelector {
     private final Stage stage;
     private final Runnable startGameCallback;
     private MainMenu parentMenu;
-
     public BirdSelector(Stage stage, Runnable startGameCallback) {
         this.stage = stage;
         this.startGameCallback = startGameCallback;
     }
-    
     public BirdSelector(Stage stage, Runnable startGameCallback, MainMenu parentMenu) {
         this.stage = stage;
         this.startGameCallback = startGameCallback;
         this.parentMenu = parentMenu;
     }
-
     public void show() {
         int randomSky;
         do {
             randomSky = (int) (Math.random() * 10) + 1;
         } while (randomSky == 4);
-
         String backgroundPath = "/resources/sky" + randomSky + ".png";
         Image bgImage = new Image(getClass().getResourceAsStream(backgroundPath));
         ImageView bgView = new ImageView(bgImage);
-        
         Settings settings = Settings.getInstance();
         int[] dimensions = settings.getDimensions();
         ScaleHelper.updateDimensions(dimensions[0], dimensions[1]);
-        
         double bgWidth, bgHeight;
         if (settings.isFullscreen()) {
             bgWidth = 7200;
@@ -61,10 +53,8 @@ public class BirdSelector {
         bgView.setFitWidth(bgWidth);
         bgView.setFitHeight(bgHeight);
         bgView.setPreserveRatio(false);
-
         Pane root = new Pane();
         root.getChildren().add(bgView);
-
         Image selectorTextImage = new Image(getClass().getResource("/resources/bird_selector_text.png").toExternalForm());
         ImageView selectorTextView = new ImageView(selectorTextImage);
         double scaledWidth = ScaleHelper.scaleWidth(400);
@@ -80,7 +70,6 @@ public class BirdSelector {
         dropShadow.setOffsetY(ScaleHelper.scaleHeight(3));
         selectorTextView.setEffect(dropShadow);
         root.getChildren().add(selectorTextView);
-
         Button bird1Button = createBirdButton(1);
         Button bird2Button = createBirdButton(2);
         Button bird3Button = createBirdButton(3);
@@ -107,7 +96,6 @@ public class BirdSelector {
         stage.setScene(scene);
         applyFullscreen();
     }
-    
     private Button createBirdButton(int birdNumber) {
         Image buttonImage = new Image(getClass().getResource("/resources/bird_select_" + birdNumber + ".png").toExternalForm());
         ImageView buttonView = new ImageView(buttonImage);
@@ -119,13 +107,10 @@ public class BirdSelector {
         button.setOnAction(e -> {
             Settings.getInstance().setSelectedBird(birdNumber);
             Settings.getInstance().saveSettings();
-            if (startGameCallback != null) {
-                startGameCallback.run();
-            }
+            new PlayerNameScreen(stage, startGameCallback).show();
         });
         return button;
     }
-    
     private void addBackButton(Pane root) {
         Image backImage = new Image(getClass().getResource("/resources/mainmenu/back.png").toExternalForm());
         ImageView backView = new ImageView(backImage);
@@ -145,7 +130,6 @@ public class BirdSelector {
         });
         root.getChildren().add(backButton);
     }
-    
     private void styleButton(Button button) {
         button.setStyle("-fx-background-color: transparent;");
         button.setPadding(Insets.EMPTY);
@@ -159,7 +143,6 @@ public class BirdSelector {
             button.setScaleY(1);
         });
     }
-    
     private void applyFullscreen() {
         if (Settings.getInstance().isFullscreen()) {
             stage.setFullScreenExitHint("");
@@ -170,7 +153,6 @@ public class BirdSelector {
             applyFullscreenLayout();
         }
     }
-    
     private void applyFullscreenLayout() {
         Pane root = (Pane) stage.getScene().getRoot();
         ImageView selectorTextView = null;
@@ -242,3 +224,4 @@ public class BirdSelector {
         }
     }
 }
+

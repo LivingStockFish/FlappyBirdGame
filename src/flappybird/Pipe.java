@@ -1,27 +1,21 @@
 package flappybird;
-
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.util.Random;
 import javafx.geometry.Bounds;
-
 public class Pipe {
     private Group topPipe;
     private Group bottomPipe;
     private static final int REF_WIDTH = 80;
     private static final int REF_GAP = 200;
-    
     private int width;
     private int gap;
     private int screenHeight;
     private static final Random random = new Random();
-
     private static final Image[][] PIPE_IMAGES = new Image[10][2];
-    
     private Image pipeBodyImage;
     private Image pipeCapImage;
-    
     private void loadCachedImages(int themeIndex) {
         if (PIPE_IMAGES[themeIndex][0] == null) {
             PIPE_IMAGES[themeIndex][0] = new Image(getClass().getResource("/resources/pipe_body_" + (themeIndex + 1) + ".png").toExternalForm());
@@ -30,10 +24,8 @@ public class Pipe {
         pipeBodyImage = PIPE_IMAGES[themeIndex][0];
         pipeCapImage = PIPE_IMAGES[themeIndex][1];
     }
-
     public Pipe(double startX, int themeIndex) {
         screenHeight = ScaleHelper.getCurrentHeight();
-        
         if (Settings.getInstance().isFullscreen()) {
             width = 100;
             gap = 300;
@@ -57,7 +49,6 @@ public class Pipe {
             topPipe = createPipe(startX, 0, gapStart, true);
         }
     }
-    
     public Pipe(double startX, int themeIndex, Pipe templatePipe) {
         this.width = templatePipe.width;
         this.gap = templatePipe.gap;
@@ -70,7 +61,6 @@ public class Pipe {
         topPipe = createPipe(startX, topPipeY, topPipeHeight, true);
         bottomPipe = createPipe(startX, bottomPipeY, bottomPipeHeight, false);
     }
-
     private Group createPipe(double x, double y, int height, boolean isTopPipe) {
         Group pipeGroup = new Group();
         int bodyHeight;
@@ -118,23 +108,18 @@ public class Pipe {
         pipeGroup.setLayoutY(y);
         return pipeGroup;
     }
-
     public void update(double speed) {
         topPipe.setLayoutX(topPipe.getLayoutX() - speed);
         bottomPipe.setLayoutX(bottomPipe.getLayoutX() - speed);
     }
-
     public boolean isOffScreen() {
         return bottomPipe.getLayoutX() + width < -100;
     }
-    
     public double getX() {
         return topPipe.getLayoutX();
     }
-
     private static double fullscreenShrinkMargin = 25;
     private static double windowedShrinkMargin = 19;
-    
     public boolean collidesWith(Bird bird) {
         double pipeX = topPipe.getLayoutX();
         double birdX = bird.getX();
@@ -164,15 +149,12 @@ public class Pipe {
         );
         return birdBounds.intersects(shrunkTopPipeBounds) || birdBounds.intersects(shrunkBottomPipeBounds);
     }
-
     public Group getTopPipe() {
         return topPipe;
     }
-
     public Group getBottomPipe() {
         return bottomPipe;
     }
-    
     public void updateColor(int newThemeIndex) {
         loadCachedImages(newThemeIndex);
         for (javafx.scene.Node node : topPipe.getChildren()) {
@@ -199,3 +181,4 @@ public class Pipe {
         }
     }
 }
+

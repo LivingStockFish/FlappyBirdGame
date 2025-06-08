@@ -1,62 +1,62 @@
 package database;
-
-import database.dao.GameSettingDAO;
-import database.dao.HighScoreDAO;
-import database.model.GameSetting;
+import database.DatabaseConnection.HighScoreEntry;
 import database.model.HighScore;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 public class DatabaseManager {
     private static DatabaseManager instance;
-    private final HighScoreDAO highScoreDAO;
-    private final GameSettingDAO gameSettingDAO;
-    
+    private final Map<String, String> settings = new HashMap<>();
     private DatabaseManager() {
-        this.highScoreDAO = new HighScoreDAO();
-        this.gameSettingDAO = new GameSettingDAO();
     }
-    
     public static synchronized DatabaseManager getInstance() {
         if (instance == null) {
             instance = new DatabaseManager();
         }
         return instance;
     }
-    
     public boolean saveHighScore(String playerName, int score) {
-        HighScore highScore = new HighScore(playerName, score);
-        return highScoreDAO.addHighScore(highScore);
+        return DatabaseConnection.getInstance().saveHighScore(playerName, score);
     }
-    
     public List<HighScore> getTopHighScores(int limit) {
-        return highScoreDAO.getTopHighScores(limit);
+        List<HighScoreEntry> entries = DatabaseConnection.getInstance().getTopHighScores(limit);
+        List<HighScore> highScores = new ArrayList<>();
+        for (HighScoreEntry entry : entries) {
+            HighScore highScore = new HighScore(
+                entry.id,
+                entry.playerName,
+                entry.score,
+                entry.dateAchieved
+            );
+            highScores.add(highScore);
+        }
+        return highScores;
     }
-    
     public int getHighestScore() {
-        return highScoreDAO.getHighestScore();
+        return DatabaseConnection.getInstance().getHighestScore();
     }
-    
+    public int getPlayerHighestScore(String playerName) {
+        return DatabaseConnection.getInstance().getPlayerHighestScore(playerName);
+    }
     public boolean resetHighScores() {
-        return highScoreDAO.deleteAllHighScores();
+        return DatabaseConnection.getInstance().deleteAllHighScores();
     }
-    
+    public boolean resetPlayerHighScore(String playerName) {
+        return DatabaseConnection.getInstance().resetPlayerHighScore(playerName);
+    }
     public boolean saveSetting(String settingName, String settingValue) {
-        GameSetting setting = new GameSetting(settingName, settingValue);
-        return gameSettingDAO.saveSetting(setting);
+        settings.put(settingName, settingValue);
+        return true;
     }
-    
     public String getSetting(String settingName) {
-        GameSetting setting = gameSettingDAO.getSettingByName(settingName);
-        return setting != null ? setting.getSettingValue() : null;
+        return settings.get(settingName);
     }
-    
     public Map<String, String> getAllSettings() {
-        return gameSettingDAO.getAllSettingsAsMap();
+        return new HashMap<>(settings);
     }
-    
     public void closeConnection() {
         DatabaseConnection.getInstance().closeConnection();
     }
 }
+

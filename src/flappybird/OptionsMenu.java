@@ -1,5 +1,4 @@
 package flappybird;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -16,17 +15,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.application.Platform;
-
 public class OptionsMenu {
     private final Stage stage;
     private final Font customFont;
     private final Runnable returnCallback;
     private final boolean fromPauseMenu;
-
     public OptionsMenu(Stage stage) {
         this(stage, () -> new MainMenu(stage).show(), false);
     }
-    
     public OptionsMenu(Stage stage, Runnable returnCallback, boolean fromPauseMenu) {
         this.stage = stage;
         this.returnCallback = returnCallback;
@@ -34,7 +30,6 @@ public class OptionsMenu {
         Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/flappyfont.ttf"), 18);
         this.customFont = font != null ? font : Font.font("Verdana", 18);
     }
-
     public void show() {
         Pane layeredRoot = new Pane();
         int[] dimensions = Settings.getInstance().getDimensions();
@@ -148,7 +143,6 @@ public class OptionsMenu {
             applyFullscreenLayout();
         }
     }
-
     private void addSliderRow(GridPane grid, int row, String yellow, String red, Slider slider) {
         TextFlow label = new TextFlow(
             coloredText(yellow + " ", Color.YELLOW),
@@ -160,7 +154,6 @@ public class OptionsMenu {
         GridPane.setValignment(label, VPos.CENTER);
         GridPane.setValignment(slider, VPos.CENTER);
     }
-
     private void addInputRow(GridPane grid, int row, String yellow, String red, Label lbl) {
         TextFlow label = new TextFlow(
             coloredText(yellow + " ", Color.YELLOW),
@@ -178,7 +171,6 @@ public class OptionsMenu {
         GridPane.setValignment(label, VPos.CENTER);
         GridPane.setValignment(lbl, VPos.CENTER);
     }
-    
     private void addToggleRow(GridPane grid, int row, String yellow, String red, ToggleButton toggle) {
         TextFlow label = new TextFlow(
             coloredText(yellow + " ", Color.YELLOW),
@@ -190,7 +182,6 @@ public class OptionsMenu {
         GridPane.setValignment(label, VPos.CENTER);
         GridPane.setValignment(toggle, VPos.CENTER);
     }
-
     private Slider createStyledSlider(double initialValue) {
         Slider slider = new Slider(0, 100, initialValue);
         slider.setPrefWidth(ScaleHelper.scaleWidth(200));
@@ -203,7 +194,6 @@ public class OptionsMenu {
         slider.setStyle("-fx-control-inner-background: brown; -fx-background-color: transparent;");
         return slider;
     }
-    
     private ToggleButton createStyledToggleButton(boolean initialState) {
         ToggleButton toggle = new ToggleButton(initialState ? "Yes" : "No");
         toggle.setSelected(initialState);
@@ -238,7 +228,6 @@ public class OptionsMenu {
         });
         return toggle;
     }
-
     private Text coloredText(String text, Color color) {
         Text t = new Text(text);
         t.setFill(color);
@@ -248,7 +237,6 @@ public class OptionsMenu {
         t.setTextAlignment(javafx.scene.text.TextAlignment.LEFT);
         return t;
     }
-
     private void styleIconButton(Button button) {
         ImageView view = (ImageView) button.getGraphic();
         view.setFitWidth(ScaleHelper.scaleWidth(60));
@@ -264,7 +252,6 @@ public class OptionsMenu {
             button.setScaleY(1.0);
         });
     }
-
     private Label createStyledKeyLabel(String keyText) {
         Label label = new Label(keyText);
         label.setStyle("-fx-background-color: brown; -fx-border-color: yellow;");
@@ -277,7 +264,6 @@ public class OptionsMenu {
         label.setTextFill(Color.YELLOW);
         return label;
     }
-
     private void showKeyCaptureDialog(String action, Label target) {
         Stage d = new Stage();
         d.initStyle(StageStyle.UNDECORATED);
@@ -289,12 +275,9 @@ public class OptionsMenu {
         double fontSize = customFont.getSize() * ScaleHelper.getUniformScale();
         Font scaledFont = Font.font(customFont.getFamily(), fontSize);
         prompt.setFont(scaledFont);
-        
-
-        Label keyPressedLabel = new Label("Waiting for key press...");
+        Label keyPressedLabel = new Label("Current: " + target.getText());
         keyPressedLabel.setTextFill(Color.WHITE);
         keyPressedLabel.setFont(scaledFont);
-        
         Button closeButton = new Button("Cancel");
         closeButton.setFont(scaledFont);
         closeButton.setStyle(
@@ -306,39 +289,30 @@ public class OptionsMenu {
         closeButton.setOnAction(e -> d.close());
         closeButton.setDefaultButton(false);
         closeButton.setCancelButton(false);
-        
         VBox b = new VBox(ScaleHelper.scaleHeight(15), prompt, keyPressedLabel, closeButton);
         b.setAlignment(Pos.CENTER);
         b.setPadding(new Insets(ScaleHelper.scaleHeight(20)));
         b.setStyle("-fx-background-color: brown; -fx-border-color: yellow; -fx-border-width: 3;");
-        
         Scene s = new Scene(b, ScaleHelper.scaleWidth(300), ScaleHelper.scaleHeight(150));
         d.setScene(s);
         d.initOwner(stage);
         d.initModality(Modality.APPLICATION_MODAL);
-        
         double dialogWidth = ScaleHelper.scaleWidth(300);
         double dialogHeight = ScaleHelper.scaleHeight(150);
         d.setX(stage.getX() + (stage.getWidth() - dialogWidth) / 2);
         d.setY(stage.getY() + (stage.getHeight() - dialogHeight) / 2);
-        
-
         Platform.runLater(() -> {
             closeButton.setDefaultButton(false);
             closeButton.setCancelButton(false);
+            s.getRoot().requestFocus();
         });
-        
         d.show();
-        
         final boolean[] keyProcessed = {false};
-        
-        s.setOnKeyPressed(evt -> {
+        s.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, evt -> {
             if (keyProcessed[0]) return;
-            
+            evt.consume();
             KeyCode code = evt.getCode();
             String displayName = "";
-            
-
             switch (code) {
                 case ENTER:
                     displayName = "Enter";
@@ -374,24 +348,14 @@ public class OptionsMenu {
                     displayName = "Alt";
                     break;
                 default:
-
                     if (code != KeyCode.UNDEFINED) {
                         displayName = code.getName();
                     }
                     break;
             }
-            
-
-            keyPressedLabel.setText("Key pressed: " + displayName);
-            
-
             if (!displayName.isEmpty()) {
-
-                
-
+                keyPressedLabel.setText("Selected: " + displayName);
                 target.setText(displayName);
-                
-
                 new Thread(() -> {
                     try {
                         Thread.sleep(300);
@@ -400,13 +364,11 @@ public class OptionsMenu {
                             d.close();
                         });
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }).start();
             }
         });
     }
-
     private void showPopup(String messageText) {
         Stage popup = new Stage();
         popup.initOwner(stage);
@@ -439,7 +401,6 @@ public class OptionsMenu {
         });
         popup.showAndWait();
     }
-
     private void applyFullscreenLayout() {
         Pane layeredRoot = (Pane) stage.getScene().getRoot();
         AnchorPane contentRoot = null;
@@ -519,7 +480,6 @@ public class OptionsMenu {
             }
         }
     }
-    
     private void applyWindowSizeChanges() {
         Settings settings = Settings.getInstance();
         int[] dimensions = settings.getDimensions();
@@ -552,7 +512,6 @@ public class OptionsMenu {
         });
         return;
     }
-    
     private void ensureWindowVisible() {
         javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
         if (stage.getX() < screenBounds.getMinX()) {
@@ -572,7 +531,6 @@ public class OptionsMenu {
             stage.centerOnScreen();
         }
     }
-    
     private void resetMainMenuLayoutStorage() {
         try {
             java.lang.reflect.Field layoutStoredField = MainMenu.class.getDeclaredField("layoutStored");
@@ -592,7 +550,6 @@ public class OptionsMenu {
         } catch (Exception e) {
         }
     }
-    
     private Image loadImage(String path) {
         try {
             return new Image(getClass().getResource(path).toExternalForm());
@@ -601,3 +558,4 @@ public class OptionsMenu {
         }
     }
 }
+
