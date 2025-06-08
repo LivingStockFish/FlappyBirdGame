@@ -1,0 +1,35 @@
+name: Java CI - Compile with JavaFX 21.0.7 on Windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 21.0.7
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21.0.7'
+
+    - name: Unzip JavaFX SDK
+      run: |
+        Expand-Archive libs/javafx-sdk.zip -DestinationPath libs
+
+    - name: Compile Java code
+      shell: powershell
+      run: |
+        mkdir out
+        $files = Get-ChildItem -Path src -Filter *.java -Recurse | ForEach-Object { $_.FullName }
+        javac --module-path libs\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml,javafx.media -d out $files
+
+    - name: ✅ Compilation successful
+      run: echo "JavaFX project compiled successfully."
